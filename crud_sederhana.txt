@@ -1,0 +1,121 @@
+CRUD DATA SISWA - SPP
+
+// Koneksi ke database (sesuaikan nama database)
+MySqlConnection conn = new MySqlConnection("server=localhost;port=3306;username=root;password=;database=db-spp");
+
+// Method command untuk melakukan query ke database
+void command (String query)
+	{
+            try
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand(query, conn);
+                cmd.ExecuteNonQuery();
+
+            }catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }finally
+            { 
+                conn.Close();
+            }
+        }
+
+// Method showData untuk menampilkan data dari database ke datagridview
+void showData()
+        {
+            try
+            {
+                conn.Open();
+                MySqlDataAdapter sda = new MySqlDataAdapter("select * from siswa", conn);
+                DataTable dt = new DataTable();
+
+                sda.Fill(dt);
+                dataGridView1.DataSource = dt;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+// Method clear untuk mengkosongkan semua textbox dan menampilkan data dari database ke datagridview
+void clear()
+        {
+            txtNisn.Text = string.Empty;
+            txtNis.Text = string.Empty;
+            txtNama.Text = string.Empty;
+            txtIdKelas.Text = string.Empty;
+            txtAlamat.Text = string.Empty;
+            txtNoTelp.Text = string.Empty;
+            txtIdSpp.Text = string.Empty;
+            showData();
+        }
+
+// Jika ingin menyalin kode di bawah ini salin hanya bagian yang ada di dalam {} saja
+
+// Fungsi dibawah berfungsi ketika form di load maka akan menampilkan data dari database ke datagridview dengan memanggil fungsi clear yang tadi telah dibuat
+private void Form1_Load(object sender, EventArgs e)
+        {
+            clear();
+        }
+
+// Fungsi dibawah ini merupakan implementasi untuk menambahkan data dengan memanggil fungsi command untuk melakukan query ke database dan mengirimkan query yang akan di jalankan yaitu query untuk menambahkan data
+ private void txtTambah_Click(object sender, EventArgs e)
+        {
+            if (txtNisn.Text == string.Empty || txtNis.Text == string.Empty || txtNama.Text == string.Empty || txtIdKelas.Text == string.Empty || txtAlamat.Text == string.Empty || txtNoTelp.Text == string.Empty || txtIdSpp.Text == string.Empty)
+            {
+                MessageBox.Show("semua kolom harus di isi!");
+            }
+            else
+            {
+                command("insert into siswa(nisn, nis, nama, id_kelas, alamat, no_telp, id_spp) values ('" + txtNisn.Text + "', '" + txtNis.Text + "', '" + txtNama.Text + "', '" + txtIdKelas.Text + "', '" + txtAlamat.Text + "', '" + txtNoTelp.Text + "', '" + txtIdSpp.Text + "')");
+                clear();
+            }
+        }
+
+// Fungsi dibawah ini merupakan implementasi untuk mengedit data dengan memanggil fungsi command untuk melakukan query ke database dan mengirimkan query yang akan di jalankan yaitu query untuk mengedit data
+private void txtEdit_Click(object sender, EventArgs e)
+        {
+            if (txtNisn.Text == string.Empty || txtNis.Text == string.Empty || txtNama.Text == string.Empty || txtIdKelas.Text == string.Empty || txtAlamat.Text == string.Empty || txtNoTelp.Text == string.Empty || txtIdSpp.Text == string.Empty)
+            {
+                MessageBox.Show("semua kolom harus di isi!");
+            }
+            else
+            {
+                command("update siswa set nis = '" + txtNis.Text + "', nama = '" + txtNama.Text + "', id_kelas = '" + txtIdKelas.Text + "', alamat = '" + txtAlamat.Text + "', no_telp = '" + txtNoTelp.Text + "', id_spp = '" + txtIdSpp.Text + "' where nisn = '" + txtNisn.Text + "'");
+                clear();
+            }
+        }
+
+// Fungsi dibawah ini merupakan implementasi untuk menghapus data dengan memanggil fungsi command untuk melakukan query ke database dan mengirimkan query yang akan di jalankan yaitu query untuk menghapus data
+private void txtHapus_Click(object sender, EventArgs e)
+        {
+            if (txtNisn.Text == string.Empty || txtNis.Text == string.Empty || txtNama.Text == string.Empty || txtIdKelas.Text == string.Empty || txtAlamat.Text == string.Empty || txtNoTelp.Text == string.Empty || txtIdSpp.Text == string.Empty)
+            {
+                MessageBox.Show("semua kolom harus di isi!");
+            }
+            else
+            {
+                command("delete from siswa where nisn = '" + txtNisn.Text + "'");
+                clear();
+            }
+        }
+
+// Fungsi dibawah ini berfungsi untuk jika suatu baris data di datagridview di klik maka value dari baris data tersebut akan masuk ke textbox yang sudah ditentukan
+private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            DataGridViewRow dr = this.dataGridView1.Rows[e.RowIndex];
+
+            txtNisn.Text = dr.Cells[0].Value.ToString();
+            txtNis.Text = dr.Cells[1].Value.ToString();
+            txtNama.Text = dr.Cells[2].Value.ToString();
+            txtIdKelas.Text = dr.Cells[3].Value.ToString();
+            txtAlamat.Text = dr.Cells[4].Value.ToString();
+            txtNoTelp.Text = dr.Cells[5].Value.ToString();
+            txtIdSpp.Text = dr.Cells[6].Value.ToString();
+        }
